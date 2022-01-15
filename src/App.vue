@@ -15,7 +15,7 @@
         <div class="col-sm-6">
           <h3>Preencha abaixo</h3>
 
-          <form>
+          <form @submit.prevent="enviar" @reset="resetar">
 
             <div class="form-group">
               <label>Nome:</label>
@@ -127,7 +127,19 @@
               <textarea 
                 class="form-control" 
                 placeholder="Conte-nos um pouco sobre você..."
-                v-model.lazy.trim="desenvolvedor.resumo"></textarea>
+                v-model.lazy.trim="desenvolvedor.resumo">
+              </textarea>
+            </div>
+
+            <div class="form-group">
+              <AppRange
+                label="Salário pretendido:"
+                :inputClassesLabel="[{'form-label': true }]"
+                :inputClassesInput="[{ 'form-range': true }]"
+                v-model.number="desenvolvedor.salario"
+                min="1000"
+                max="15000"
+                step="500"/>
             </div>
 
             <div class="form-group">
@@ -142,9 +154,8 @@
               </div>
             </div>
 
-            <button class="btn btn-secondary">Resetar</button>
-            <button class="btn btn-success">Enviar</button>
-
+            <button class="btn btn-secondary" type="reset">Resetar</button>
+            <button class="btn btn-success" type="submit">Enviar</button>
           </form>
         </div>
 
@@ -173,6 +184,7 @@
                 <div style="white-space: pre">{{ desenvolvedor.resumo }}</div> 
               </li>
               <li class="list-group-item"><strong>Receber notificações?</strong>{{ desenvolvedor.notificacoes }} </li>
+              <li class="list-group-item"><strong>Salário pretendido: </strong>{{ desenvolvedor.salario }} </li>
             </ul>
 
             <div class="card-header">Model</div>
@@ -180,21 +192,24 @@
               <pre><code>{{ desenvolvedor }}</code></pre>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>
 
 <script>
+
+import AppRange from './components/Range.vue'
+
 export default {
+  components:{
+    AppRange
+  },
   data(){
     return {
-      desenvolvedor:{
+      desenvolvedor: {},
+      valoresPadroes:{
         nome:'',
         email:'',
         idade: 31,
@@ -202,7 +217,8 @@ export default {
         genero: 'Masculino',
         notificacoes: 'Não',
         tecnologias:[],
-        ocupacao: ''
+        ocupacao: '',
+        salario: 7000
       },
       ocupacoes:[
         'Desenvolvedor Front End (web)',
@@ -212,6 +228,18 @@ export default {
         'Desenvolvedor Full Stack'
       ]
     }
+  },
+  methods:{
+    enviar(){
+      const formularioEnviado = {...this.desenvolvedor}
+      console.log("Formulário enviado: ", formularioEnviado)
+    },
+    resetar(){
+      this.desenvolvedor = { ...this.valoresPadroes }
+    }
+  },
+  created(){
+    this.resetar();
   }
 }
 </script>
